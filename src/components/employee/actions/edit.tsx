@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { CustomCellRendererProps } from "ag-grid-react";
-import { EmployeeModal } from "../../../common/modal";
+import { EmployeeModal } from "../modal";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCafeFilter } from "../../../apis/cafe";

@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, CircularProgress } from "@mui/material";
 import { getAllCafeFilter } from "../../apis/cafe";
 import { Footer } from "../../common/footer";
-import { EmployeeModal } from "../../common/modal";
+import { EmployeeModal } from "./modal";
 import { getRouteApi, useMatch, useRouterState } from "@tanstack/react-router";
 import { Route } from "../../routes/__root";
 
