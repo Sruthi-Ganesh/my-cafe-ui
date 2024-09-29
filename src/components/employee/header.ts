@@ -4,17 +4,19 @@ import { DeleteEmployeeComponent } from "./actions/delete";
 export const Header = [
   {
     field: "edit",
-    cellRenderer: EditEmployeeComponent
+    cellRenderer: EditEmployeeComponent,
+    minWidth: 100
   },
-  { field: "id" },
-  { field: "name" },
-  { field: "email_address", headerName: "Email Address" },
-  { field: "phone_number", headerName: "Phone Number" },
-  { field: "gender", headerName: "Gender" },
-  { field: "cafe.name", headerName: "Current Cafe" },
-  { field: "days_worked", headerName: "Days Worked in Cafe" },
+  { field: "id", minWidth: 100 },
+  { field: "name", minWidth: 100 },
+  { field: "email_address", headerName: "Email Address", minWidth: 200 },
+  { field: "phone_number", headerName: "Phone Number", minWidth: 200 },
+  { field: "gender", headerName: "Gender", minWidth: 100 },
+  { field: "cafe.name", headerName: "Current Cafe", minWidth: 100 },
+  { field: "days_worked", headerName: "Days Worked in Cafe", minWidth: 200 },
   {
     field: "delete",
-    cellRenderer: DeleteEmployeeComponent
+    cellRenderer: DeleteEmployeeComponent,
+    minWidth: 100
   },
 ];

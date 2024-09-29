@@ -18,6 +18,7 @@ interface DialogProps {
   content: string;
   open: boolean;
   setOpen: (open: boolean) => void;
+  onDelete: () => void;
 }
 
 export const ConfirmationDialog = (props: DialogProps) => {
@@ -37,7 +38,7 @@ export const ConfirmationDialog = (props: DialogProps) => {
         <Button onClick={() => props.setOpen(false)} variant="outlined">
           Cancel
         </Button>
-        <Button color="error" variant="contained">
+        <Button onClick={() => props.onDelete()} color="error" variant="contained">
           Delete
         </Button>
       </DialogActions>

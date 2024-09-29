@@ -11,7 +11,7 @@ interface TableProps {
 
 export const Table = (props: TableProps) => {
   const defaultColDef = useMemo(() => {
-    return {};
+    return {flex: 10};
   }, []);
 
   const onReady = useCallback(() => {}, []);

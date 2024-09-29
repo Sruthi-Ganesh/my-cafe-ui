@@ -1,5 +1,6 @@
 import { Label } from "@mui/icons-material";
 import {
+  Alert,
   AppBar,
   Box,
   Button,
@@ -19,6 +20,9 @@ import { BoxStyle } from "./box";
 import { GENDER } from "./gender";
 import Grid from "@mui/material/Grid2";
 import "./styles.scss";
+import { validateName } from "../../../validations/employee/NameValidator";
+import { validateEmail } from "../../../validations/employee/EmailValidator";
+import { validatePhone } from "../../../validations/employee/PhoneValidator";
 
 interface EmployeeModalProps {
   open: boolean;
@@ -26,18 +30,23 @@ interface EmployeeModalProps {
   displayTitle: string;
   cafes: Array<any>;
   data?: any;
+  onSubmit: (name: string, email_address: string, phone_number: string, gender: string, cafe_id: string | null) => void;
+
 }
 
 export const EmployeeModal = (props: EmployeeModalProps) => {
-  const {data} = props;
+  const { data } = props;
 
-  const [gender, setGender] = useState<string>(data ? data.gender : "MALE");
+  const genderToSet: any = GENDER.find((g: any) => data && g.label === data.gender ? g : null);
+  const [gender, setGender] = useState<string>(genderToSet ? genderToSet.value : "M");
 
   const handleGenderChange = (event: SelectChangeEvent<typeof gender>) => {
     setGender(event.target.value);
   };
 
-  const [cafe, setCafe] = useState<string | null>(data && data.cafe ? data.cafe.id : null);
+  const [cafe, setCafe] = useState<string | null>(
+    data && data.cafe ? data.cafe.id : null
+  );
 
   const handleCafeChange = (event: SelectChangeEvent<typeof cafe>) => {
     setCafe(event.target.value);
@@ -63,7 +72,44 @@ export const EmployeeModal = (props: EmployeeModalProps) => {
     setGenderSelectOpen(true);
   };
 
+  const [name, setName] = useState<string>(data ? data.name : "");
+  const [email, setEmail] = useState<string>(data ? data.email_address : "");
+  const [phoneNumber, setPhoneNumber] = useState<string>(
+    data ? data.phone_number : ""
+  );
+
+  const [error, setError] = useState<any>();
+
   const handleClose = () => props.setOpen(false);
+
+  const handleSubmit = () => {
+    let errorMessage = validateName(name);
+    if (errorMessage != null) {
+      setError({ error: true, message: errorMessage });
+      return;
+    }
+
+    errorMessage = validateEmail(email);
+    if (errorMessage != null) {
+      setError({ error: true, message: errorMessage });
+      return;
+    }
+
+    errorMessage = validatePhone(phoneNumber);
+    if (errorMessage != null) {
+      setError({ error: true, message: errorMessage });
+      return;
+    }
+
+    if (gender == null || gender == "") {
+      setError({ error: true, message: "Gender cannot be empty" });
+      return;
+    }
+
+    setError(null);
+    props.onSubmit(name, email, phoneNumber, gender, cafe);
+    handleClose();
+  };
 
   return (
     <Modal open={props.open} onClose={handleClose} className="create-modal">
@@ -75,34 +121,54 @@ export const EmployeeModal = (props: EmployeeModalProps) => {
             </Typography>
           </Toolbar>
         </AppBar>
+        {error && (
+          <Alert variant="filled" severity="error">
+            {error.message}
+          </Alert>
+        )}
         <FormControl className="create-form" defaultValue="" required>
           <Grid container spacing={5}>
             <Grid size={3}>
-              <div className="label">Name</div>
+              <div className="label">Name *</div>
             </Grid>
             <Grid size={7}>
-              <TextField required placeholder="Employee Name" value={data ? data.name : ''} />
+              <TextField
+                required
+                placeholder="Employee Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </Grid>
           </Grid>
           <Grid container spacing={5}>
             <Grid size={3}>
-              <div className="label">Email Address</div>
+              <div className="label">Email *</div>
             </Grid>
             <Grid size={7}>
-              <TextField required placeholder="Employee Email Address" value={data ? data.email_address : ''}/>
+              <TextField
+                required
+                placeholder="Employee Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </Grid>
           </Grid>
           <Grid container spacing={5}>
             <Grid size={3}>
-              <div className="label">Phone Number</div>
+              <div className="label">Phone Number *</div>
             </Grid>
             <Grid size={7}>
-              <TextField required placeholder="Employee Phone Number" value={data ? data.phone_number : ''}/>
+              <TextField
+                required
+                placeholder="Employee Phone Number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
             </Grid>
           </Grid>
           <Grid container spacing={5}>
             <Grid size={3}>
-              <div className="label">Gender</div>
+              <div className="label">Gender *</div>
             </Grid>
             <Grid size={7}>
               <Select
@@ -115,8 +181,8 @@ export const EmployeeModal = (props: EmployeeModalProps) => {
                 onChange={handleGenderChange}
               >
                 {GENDER.map((item: any) => (
-                  <MenuItem key={item} value={item}>
-                    {item}
+                  <MenuItem key={item.value} value={item.value}>
+                    {item.label}
                   </MenuItem>
                 ))}
               </Select>
@@ -125,7 +191,7 @@ export const EmployeeModal = (props: EmployeeModalProps) => {
 
           <Grid container spacing={5}>
             <Grid size={3}>
-              <div className="label">Cafe</div>
+              <div className="label">Cafe (optional)</div>
             </Grid>
             <Grid size={7}>
               <FormControl sx={{ m: 2, minWidth: 200 }}>
@@ -157,7 +223,11 @@ export const EmployeeModal = (props: EmployeeModalProps) => {
             </Grid>
           </Grid>
           <Grid container spacing={2}>
-            <Button variant="contained" className="form-button">
+            <Button
+              onClick={handleSubmit}
+              variant="contained"
+              className="form-button"
+            >
               Submit
             </Button>
             <Button

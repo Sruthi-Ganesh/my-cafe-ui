@@ -1,10 +1,10 @@
 import { Header } from "./header";
-import { getAllEmployees } from "../../apis/employee";
+import { createEmployee, getAllEmployees } from "../../apis/employee";
 import { Table } from "../../common/table";
 import { FilterPane } from "../../common/filter";
 import { SEARCH_PARAM } from "./search";
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, CircularProgress } from "@mui/material";
 import { getAllCafeFilter } from "../../apis/cafe";
 import { Footer } from "../../common/footer";
@@ -64,6 +64,17 @@ export const Employee = () => {
     setSelected({ value: "" });
   };
 
+  const mutation = useMutation({
+    mutationFn: (data: any) => {
+      return createEmployee(data).then(() => {
+        queryClient.invalidateQueries({
+          queryKey: ["employeeData", page, pageSize, selected.value],
+        });
+        return data;
+      });
+    },
+  });
+
   if (error) {
     return (
       <Alert variant="filled" severity="error">
@@ -80,7 +91,15 @@ export const Employee = () => {
     );
   }
 
-  if (isPending || cafeQuery.isPending) {
+  if (mutation.error) {
+    return (
+      <Alert variant="filled" severity="error">
+        {mutation.error.message}
+      </Alert>
+    );
+  }
+
+  if (isPending || cafeQuery.isPending || mutation.isPending) {
     return <CircularProgress />;
   }
 
@@ -99,6 +118,9 @@ export const Employee = () => {
         name="Create new Employee"
       ></Footer>
       <EmployeeModal
+        onSubmit={(name, email_address, phone_number, gender, cafe_id) =>
+          mutation.mutate({ name, email_address, phone_number, gender, cafe_id })
+        }
         cafes={cafeQuery.data}
         displayTitle="Create Employee Form"
         open={createModalOpen}

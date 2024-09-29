@@ -4,8 +4,10 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { CustomCellRendererProps } from "ag-grid-react";
 import { EmployeeModal } from "../modal";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAllCafeFilter } from "../../../apis/cafe";
+import { Alert, CircularProgress } from "@mui/material";
+import { updateEmployee } from "../../../apis/employee";
 
 library.add(faPenToSquare);
 
@@ -18,11 +20,49 @@ export const EditEmployeeComponent = (params: CustomCellRendererProps) => {
       return getAllCafeFilter();
     },
   });
-  
+
+  const mutation = useMutation({
+    mutationFn: (data: any) => {
+      return updateEmployee(data);
+    },
+  });
+
+  if (cafeQuery.error) {
+    return (
+      <Alert variant="filled" severity="error">
+        {cafeQuery.error.message}
+      </Alert>
+    );
+  }
+
+  if (mutation.error) {
+    return (
+      <Alert variant="filled" severity="error">
+        {mutation.error.message}
+      </Alert>
+    );
+  }
+
+  if (cafeQuery.isPending || mutation.isPending) {
+    return <CircularProgress />;
+  }
+
   return (
     <>
-      <EmployeeModal cafes={cafeQuery.data} data={params.data} displayTitle="Update Employee Form" open={editModalOpen} setOpen={setEditModelOpen}></EmployeeModal>
-      <FontAwesomeIcon onClick={() => setEditModelOpen(true)} icon="fa-pen-to-square" />
+      <EmployeeModal
+        onSubmit={(name, email_address, phone_number, gender, cafe_id) =>
+          mutation.mutate({ name, email_address, phone_number, gender, cafe_id, empId: params.data.id })
+        }
+        cafes={cafeQuery.data}
+        data={params.data}
+        displayTitle="Update Employee Form"
+        open={editModalOpen}
+        setOpen={setEditModelOpen}
+      ></EmployeeModal>
+      <FontAwesomeIcon
+        onClick={() => setEditModelOpen(true)}
+        icon="fa-pen-to-square"
+      />
     </>
   );
 };

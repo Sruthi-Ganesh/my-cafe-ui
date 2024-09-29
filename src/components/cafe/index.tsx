@@ -1,11 +1,11 @@
 import { Table } from "../../common/table";
 import { Header } from "./header";
-import { getAllCafes } from "../../apis/cafe";
+import { createCafe, getAllCafes } from "../../apis/cafe";
 import { getAllEmployees } from "../../apis/employee";
 import { FilterPane } from "../../common/filter";
 import { SEARCH_PARAM } from "./search";
 import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, CircularProgress } from "@mui/material";
 import { getAllCountries } from "../../apis/countries";
 import { Footer } from "../../common/footer";
@@ -62,6 +62,17 @@ export const Cafe = () => {
     setSelected({ value: "" });
   };
 
+  const mutation = useMutation({
+    mutationFn: (data: any) => {
+      return createCafe(data).then(() => {
+        queryClient.invalidateQueries({
+          queryKey: ["cafeData", page, pageSize, selected.value],
+        });
+        return data;
+      });
+    },
+  });
+
   if (error) {
     return (
       <Alert variant="filled" severity="error">
@@ -78,7 +89,15 @@ export const Cafe = () => {
     );
   }
 
-  if (isPending || countryQuery.isPending) {
+  if (mutation.error) {
+    return (
+      <Alert variant="filled" severity="error">
+        {mutation.error.message}
+      </Alert>
+    );
+  }
+
+  if (isPending || countryQuery.isPending || mutation.isPending) {
     return <CircularProgress />;
   }
 
@@ -97,6 +116,9 @@ export const Cafe = () => {
         name="Create new Cafe"
       ></Footer>
       <CafeModal
+        onSubmit={(name, description, location, file) =>
+          mutation.mutate({ name, description, location, file })
+        }
         open={createModalOpen}
         setOpen={setCreateModelOpen}
         displayTitle="Create new Cafe"
