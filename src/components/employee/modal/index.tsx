@@ -15,10 +15,10 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import "./styles.scss";
 import { BoxStyle } from "./box";
 import { GENDER } from "./gender";
 import Grid from "@mui/material/Grid2";
+import "./styles.scss";
 
 interface EmployeeModalProps {
   open: boolean;

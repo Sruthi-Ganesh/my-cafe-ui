@@ -2,10 +2,10 @@
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import "./styles.scss";
 import { PAGE_SIZE } from "./page";
 import { useMemo } from "react";
 import { PaginationChangedEvent } from "ag-grid-community";
+import "./styles.scss";
 
 interface GridProps {
   rowData: any;

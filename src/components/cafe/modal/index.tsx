@@ -15,9 +15,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import "./styles.scss";
 import { BoxStyle } from "./box";
 import Grid from "@mui/material/Grid2";
+import "./styles.scss";
 
 interface CafeModalProps {
   open: boolean;

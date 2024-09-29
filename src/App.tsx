@@ -1,6 +1,6 @@
 import { RouterProvider, AnyRouter } from "@tanstack/react-router";
-import "./App.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "./App.css";
 
 interface AppProps {
   router: AnyRouter;

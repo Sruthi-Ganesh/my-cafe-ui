@@ -3,9 +3,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import "./styles.scss";
 import { Button } from "@mui/material";
-import { useEffect } from "react";
+import "./styles.scss";
 
 interface FilterProps {
   field: string;
