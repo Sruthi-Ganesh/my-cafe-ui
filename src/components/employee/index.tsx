@@ -9,15 +9,16 @@ import { Alert, CircularProgress } from "@mui/material";
 import { getAllCafeFilter } from "../../apis/cafe";
 import { Footer } from "../../common/footer";
 import { EmployeeModal } from "./modal";
-import { getRouteApi, useMatch, useRouterState } from "@tanstack/react-router";
+import { getRouteApi } from "@tanstack/react-router";
 import { Route } from "../../routes/__root";
+import { PAGE_SIZE } from "../../common/table/page";
 
 export const Employee = () => {
   const routeApi = getRouteApi(Route.fullPath);
   const filters = routeApi.useSearch();
   const queryClient = useQueryClient();
-  const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
+  const [page, setPage] = useState<number>(PAGE_SIZE.page);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE.page_size);
   const [selected, setSelected] = useState<any>({
     value: filters && filters.cafeId ? filters.cafeId : "",
     label: filters && filters.cafeName ? filters.cafeName : "",
@@ -45,7 +46,7 @@ export const Employee = () => {
     queryKey: ["cafes"],
     queryFn: () => {
       return getAllCafeFilter();
-    },
+    }
   });
 
   const getData = async (page: number, pageSize: number, itemId: string) => {
@@ -112,7 +113,7 @@ export const Employee = () => {
         items={cafeQuery.data}
         field={SEARCH_PARAM.field.name}
       ></FilterPane>
-      <Table data={data} refreshData={refreshTable} headerData={Header} />
+      <Table page={page} pageSize={pageSize} data={data} refreshData={refreshTable} headerData={Header} />
       <Footer
         onClick={() => setCreateModelOpen(true)}
         name="Create new Employee"

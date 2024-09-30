@@ -16,7 +16,10 @@ export const DeleteEmployeeComponent = (params: CustomCellRendererProps) => {
   const mutation = useMutation({
     mutationFn: (data: any) => {
       setDeleteModelOpen(false);
-      return deleteEmployee(data);
+      return deleteEmployee(data).then((res) => {
+        params.api.applyTransaction({ remove: [{id: data.empId}] });
+        return res;
+      });
     },
   });
 

@@ -23,7 +23,10 @@ export const EditEmployeeComponent = (params: CustomCellRendererProps) => {
 
   const mutation = useMutation({
     mutationFn: (data: any) => {
-      return updateEmployee(data);
+      return updateEmployee(data).then((res) => {
+        params.api.applyTransaction({ update: [res] });
+        return res;
+      });
     },
   });
 
@@ -36,6 +39,7 @@ export const EditEmployeeComponent = (params: CustomCellRendererProps) => {
   }
 
   if (mutation.error) {
+    console.log(mutation.error);
     return (
       <Alert variant="filled" severity="error">
         {mutation.error.message}
@@ -51,7 +55,14 @@ export const EditEmployeeComponent = (params: CustomCellRendererProps) => {
     <>
       <EmployeeModal
         onSubmit={(name, email_address, phone_number, gender, cafe_id) =>
-          mutation.mutate({ name, email_address, phone_number, gender, cafe_id, empId: params.data.id })
+          mutation.mutate({
+            name,
+            email_address,
+            phone_number,
+            gender,
+            cafe_id,
+            empId: params.data.id,
+          })
         }
         cafes={cafeQuery.data}
         data={params.data}

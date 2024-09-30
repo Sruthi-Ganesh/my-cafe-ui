@@ -10,11 +10,12 @@ import { Alert, CircularProgress } from "@mui/material";
 import { getAllCountries } from "../../apis/countries";
 import { Footer } from "../../common/footer";
 import { CafeModal } from "./modal";
+import { PAGE_SIZE } from "../../common/table/page";
 
 export const Cafe = () => {
   const queryClient = useQueryClient();
-  const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(20);
+  const [page, setPage] = useState<number>(PAGE_SIZE.page);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE.page_size);
   const [selected, setSelected] = useState<any>({ value: "" });
   const [createModalOpen, setCreateModelOpen] = useState<boolean>(false);
 

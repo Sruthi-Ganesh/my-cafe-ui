@@ -1,12 +1,12 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, CircularProgress } from "@mui/material";
+import { useCallback, useMemo } from "react";
 import { GridTable } from "./grid";
 
 interface TableProps {
   data: Array<any>;
   headerData: any;
   refreshData: (page: number, page_size: number) => void;
+  page: number;
+  pageSize: number;
 }
 
 export const Table = (props: TableProps) => {
@@ -18,6 +18,8 @@ export const Table = (props: TableProps) => {
 
   return (
     <GridTable
+      page={props.page}
+      pageSize={props.pageSize}
       rowData={props.data}
       columnDefs={props.headerData}
       defaultColDef={defaultColDef}

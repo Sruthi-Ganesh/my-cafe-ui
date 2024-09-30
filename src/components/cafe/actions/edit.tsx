@@ -23,7 +23,10 @@ export const EditCafeComponent = (params: CustomCellRendererProps) => {
 
   const mutation = useMutation({
     mutationFn: (data: any) => {
-      return updateCafe(data);
+      return updateCafe(data).then((res) => {
+        params.api.applyTransaction({ update: [res] });
+        return res;
+      });
     },
   });
 

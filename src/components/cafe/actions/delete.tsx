@@ -16,7 +16,10 @@ export const DeleteCafeComponent = (params: CustomCellRendererProps) => {
     const mutation = useMutation({
       mutationFn: (data: any) => {
         setDeleteModelOpen(false);
-        return deleteCafe(data);
+        return deleteCafe(data).then((res) => {
+          params.api.applyTransaction({ remove: [{id: data.cafeId}] });
+          return res;
+        });
       },
     });
 

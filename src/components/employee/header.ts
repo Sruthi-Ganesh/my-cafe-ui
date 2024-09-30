@@ -5,7 +5,8 @@ export const Header = [
   {
     field: "edit",
     cellRenderer: EditEmployeeComponent,
-    minWidth: 100
+    minWidth: 100,
+    cellRendererParams: {}
   },
   { field: "id", minWidth: 100 },
   { field: "name", minWidth: 100 },
@@ -17,6 +18,7 @@ export const Header = [
   {
     field: "delete",
     cellRenderer: DeleteEmployeeComponent,
-    minWidth: 100
+    minWidth: 100,
+    cellRendererParams: {}
   },
 ];
