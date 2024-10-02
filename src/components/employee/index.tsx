@@ -46,7 +46,7 @@ export const Employee = () => {
     queryKey: ["cafes"],
     queryFn: () => {
       return getAllCafeFilter();
-    }
+    },
   });
 
   const getData = async (page: number, pageSize: number, itemId: string) => {
@@ -113,14 +113,26 @@ export const Employee = () => {
         items={cafeQuery.data}
         field={SEARCH_PARAM.field.name}
       ></FilterPane>
-      <Table page={page} pageSize={pageSize} data={data} refreshData={refreshTable} headerData={Header} />
+      <Table
+        page={page}
+        pageSize={pageSize}
+        data={data}
+        refreshData={refreshTable}
+        headerData={Header}
+      />
       <Footer
         onClick={() => setCreateModelOpen(true)}
         name="Create new Employee"
       ></Footer>
       <EmployeeModal
         onSubmit={(name, email_address, phone_number, gender, cafe_id) =>
-          mutation.mutate({ name, email_address, phone_number, gender, cafe_id })
+          mutation.mutate({
+            name,
+            email_address,
+            phone_number,
+            gender,
+            cafe_id: cafe_id ? cafe_id : null,
+          })
         }
         cafes={cafeQuery.data}
         displayTitle="Create Employee Form"

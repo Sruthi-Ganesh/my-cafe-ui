@@ -60,7 +60,7 @@ export const EditEmployeeComponent = (params: CustomCellRendererProps) => {
             email_address,
             phone_number,
             gender,
-            cafe_id,
+            cafe_id: cafe_id ? cafe_id : null,
             empId: params.data.id,
           })
         }

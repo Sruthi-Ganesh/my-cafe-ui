@@ -43,7 +43,7 @@ export const CModal = (props: ModalProps) => {
     <>
       <Modal
         open={props.open}
-        onClose={props.handleClose}
+        onClose={handleCloseModals}
         className="create-modal"
       >
         <Box sx={BoxStyle}>
