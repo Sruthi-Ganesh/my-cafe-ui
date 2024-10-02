@@ -5,13 +5,19 @@ import {
   UPDATE_LOGO,
 } from "./constants/urls";
 
-const getURL = (page: number, page_size: number) => {
-  const {server_pagination} = process.env;
+const getURL = (page: number, page_size: number, location: string | null) => {
+  const { server_pagination } = process.env;
   let url: string;
   if (server_pagination === "true") {
     url = GET_ALL_CAFES + `?page=${page}&&page_size=${page_size}`;
+    if (location != null && location != "" && location != "null") {
+      url = url + `&&location=${location}`;
+    }
   } else {
     url = GET_ALL_CAFES;
+    if (location != null && location != "" && location != "null") {
+      url = url + `?location=${location}`;
+    }
   }
 
   return url;
@@ -22,10 +28,7 @@ export const getAllCafes = async (
   page_size: number,
   location: string | null
 ) => {
-  let url = getURL(page, page_size);
-  if (location != null && location != "" && location != "null") {
-    url = url + `&&location=${location}`;
-  }
+  let url = getURL(page, page_size, location);
   const response = await fetch(url);
   return await response.json();
 };
