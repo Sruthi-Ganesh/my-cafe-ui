@@ -1,7 +1,6 @@
 import { Table } from "../../common/table";
 import { Header } from "./header";
 import { createCafe, getAllCafes } from "../../apis/cafe";
-import { getAllEmployees } from "../../apis/employee";
 import { FilterPane } from "../../common/filter";
 import { SEARCH_PARAM } from "./search";
 import { useEffect, useState } from "react";

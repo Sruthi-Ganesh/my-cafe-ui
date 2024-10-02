@@ -9,7 +9,7 @@ import { Alert, CircularProgress } from "@mui/material";
 import { getAllCafeFilter } from "../../apis/cafe";
 import { Footer } from "../../common/footer";
 import { EmployeeModal } from "./modal";
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { Route } from "../../routes/__root";
 import { PAGE_SIZE } from "../../common/table/page";
 
@@ -24,6 +24,7 @@ export const Employee = () => {
     label: filters && filters.cafeName ? filters.cafeName : "",
   });
   const [createModalOpen, setCreateModelOpen] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     queryClient.invalidateQueries({
@@ -61,8 +62,13 @@ export const Employee = () => {
     setPageSize(page_size);
   };
 
+  const navigateToDefault = () => {
+    navigate({ to: "/" });
+  };
+
   const resetFilters = () => {
     setSelected({ value: "" });
+    navigateToDefault();
   };
 
   const mutation = useMutation({
