@@ -42,7 +42,11 @@ export const createCafe = async (data: any) => {
           method: "PUT",
           body: formData,
         };
-        return fetch(UPDATE_LOGO + data.id + "/", putOptions).then(() => data);
+        return fetch(UPDATE_LOGO + data.id + "/", putOptions)
+          .then((resp) => resp.json())
+          .then((resp) => {
+            return { ...data, logo: resp.logo };
+          });
       } else {
         return data;
       }
@@ -68,7 +72,11 @@ export const updateCafe = async (data: any) => {
           method: "PUT",
           body: formData,
         };
-        return fetch(UPDATE_LOGO + data.id + "/", putOptions).then(() => data);
+        return fetch(UPDATE_LOGO + data.id + "/", putOptions)
+          .then((resp) => resp.json())
+          .then((resp) => {
+            return { ...data, logo: resp.logo };
+          });
       } else {
         return data;
       }
@@ -76,7 +84,7 @@ export const updateCafe = async (data: any) => {
 };
 
 export const deleteCafe = async (data: any) => {
-  const {cafeId} = data;
+  const { cafeId } = data;
   const requestOptions = {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },

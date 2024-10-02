@@ -16,15 +16,15 @@ export const Header = [
     cellClass: "logoCell",
     minWidth: 100,
   },
-  { field: "id", minWidth: 400},
-  { field: "name", headerName: "Name", minWidth: 100 },
+  { field: "id", minWidth: 300},
+  { field: "name", headerName: "Name", minWidth: 150 },
   { field: "description", headerName: "Description", minWidth: 200 },
-  { field: "location", headerName: "Location", minWidth: 200 },
-  { field: "employees_count", headerName: "Employees Count", minWidth: 200 },
+  { field: "location", headerName: "Location", minWidth: 150 },
+  { field: "employees_count", headerName: "Employees Count", minWidth: 150 },
   {
     field: "employees", headerName: "View Employees",
     cellRenderer: LinkEmployees,
-    minWidth: 200
+    minWidth: 150
   },
   {
     field: "delete",

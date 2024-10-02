@@ -9,7 +9,7 @@ export const Header = [
     cellRendererParams: {}
   },
   { field: "id", minWidth: 100 },
-  { field: "name", minWidth: 100 },
+  { field: "name", minWidth: 150 },
   { field: "email_address", headerName: "Email Address", minWidth: 200 },
   { field: "phone_number", headerName: "Phone Number", minWidth: 200 },
   { field: "gender", headerName: "Gender", minWidth: 100 },

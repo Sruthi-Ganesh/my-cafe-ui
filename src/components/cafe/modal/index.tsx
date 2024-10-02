@@ -1,30 +1,9 @@
-import { Label } from "@mui/icons-material";
-import {
-  Alert,
-  AppBar,
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Select,
-  SelectChangeEvent,
-  styled,
-  TextField,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import { useEffect, useState } from "react";
-import { BoxStyle } from "./box";
-import Grid from "@mui/material/Grid2";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CloseIcon from "@mui/icons-material/Close";
-import "./styles.scss";
 import { validateName } from "../../../validations/cafe/NameValidator";
 import { validateDescription } from "../../../validations/cafe/DescriptionValidator";
 import { validateFile } from "../../../validations/cafe/FileValidator";
+import { CafeHooks } from "./hooks";
+import { FieldType, ModalType } from "../../../common/modal/types";
+import { CModal } from "../../../common/modal";
 
 interface CafeModalProps {
   open: boolean;
@@ -32,56 +11,38 @@ interface CafeModalProps {
   displayTitle: string;
   countries: Array<any>;
   data?: any;
-  onSubmit: (name: string, description: string, location: string, file: File | null | undefined) => void;
+  onSubmit: (
+    name: string,
+    description: string,
+    location: string,
+    file: File | null | undefined
+  ) => void;
 }
 
 export const CafeModal = (props: CafeModalProps) => {
   const { data } = props;
-
-  const [value, setValue] = useState<string | null>(
-    data ? data.location : null
-  );
-  const [location, setLocation] = useState<any | null>(
-    data ? data.location : null
-  );
-
-  useEffect(() => {
-    setLocation(props.countries.find((c) => (c.label === value ? c : null)));
-  }, [value]);
-
-  const handleCafeChange = (event: SelectChangeEvent<typeof location>) => {
-    setValue(event.target.value);
-  };
-
-  const [locationSelectOpen, setLocationSelectOpen] = useState(false);
-
-  const handleCafeSelectClose = () => {
-    setLocationSelectOpen(false);
-  };
-
-  const handleCafeSelectOpen = () => {
-    setLocationSelectOpen(true);
-  };
-
-  const handleClose = () => props.setOpen(false);
-
-  const [file, setFile] = useState<File | null>();
-
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
+  const {
+    location,
+    setLocation,
+    handleLocationChange,
+    locationSelectOpen,
+    handleLocationSelect,
+    file,
+    setFile,
+    name,
+    setName,
+    description,
+    setDescription,
+    error,
+    setError,
+  } = CafeHooks({
+    locationValue: data ? data.location : "",
+    countries: props.countries,
+    nameValue: data ? data.name : "",
+    descriptionValue: data ? data.description : "",
   });
 
-  const [name, setName] = useState<string>(data ? data.name : "");
-  const [description, setDescription] = useState<string>(data ? data.description : "");
-  const [error, setError] = useState<any>();
+  const handleClose = () => props.setOpen(false);
 
   const handleSubmit = () => {
     let errorMessage = validateName(name);
@@ -108,134 +69,71 @@ export const CafeModal = (props: CafeModalProps) => {
     }
 
     setError(null);
-    props.onSubmit(name, description, location.value, file);
+    props.onSubmit(name, description, location, file);
     handleClose();
   };
 
+  let cafeTypes: Array<ModalType> = [
+    {
+      type: FieldType.TextField,
+      placeholder: "Cafe Name",
+      label: "Name *",
+      gridLabelSize: 3,
+      gridFieldSize: 7,
+      value: name,
+      onChange: (e) => setName(e.target.value),
+      required: true,
+    },
+    {
+      type: FieldType.TextField,
+      placeholder: "Cafe Description",
+      label: "Description *",
+      gridLabelSize: 3,
+      gridFieldSize: 7,
+      value: description,
+      onChange: (e) => setDescription(e.target.value),
+      required: true,
+    },
+    {
+      type: FieldType.SelectField,
+      placeholder: "Cafe Location",
+      label: "Location *",
+      gridLabelSize: 3,
+      gridFieldSize: 7,
+      value: location,
+      required: true,
+      selectField: {
+        data: props.countries,
+        open: locationSelectOpen,
+        handleChange: handleLocationChange,
+        handleSelect: handleLocationSelect,
+        inputLabelText: "Select Cafe Location",
+      },
+    },
+    {
+      type: FieldType.FileField,
+      label: "Upload Logo (optional)",
+      gridLabelSize: 3,
+      gridFieldSize: 7,
+      required: true,
+      fileField: {
+        fileExists: !!file,
+        fileName: file ? file.name : "unknown",
+        buttonName: "Upload Logo",
+        setFile,
+      },
+    },
+  ];
+
   return (
-    <Modal open={props.open} onClose={handleClose} className="create-modal">
-      <Box sx={BoxStyle}>
-        <AppBar className="create-appbar" position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              {props.displayTitle}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        {error && (
-          <Alert variant="filled" severity="error">
-            {error.message}
-          </Alert>
-        )}
-        <FormControl className="create-form" defaultValue="" required>
-          <Grid container spacing={5}>
-            <Grid size={3}>
-              <div className="label">Name *</div>
-            </Grid>
-            <Grid size={7}>
-              <TextField
-                required
-                placeholder="Cafe Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={5}>
-            <Grid size={3}>
-              <div className="label">Description *</div>
-            </Grid>
-            <Grid size={7}>
-              <TextField
-                required
-                placeholder="Employee Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={5}>
-            <Grid size={3}>
-              <div className="label">Location *</div>
-            </Grid>
-            <Grid size={7}>
-              <FormControl sx={{ m: 2, minWidth: 200 }}>
-                <InputLabel
-                  sx={{ minWidth: 200 }}
-                  id="controlled-open-select-label"
-                >
-                  Select Cafe Location
-                </InputLabel>
-                <Select
-                  labelId="controlled-open-select-label"
-                  id="cafe-select"
-                  open={locationSelectOpen}
-                  onClose={handleCafeSelectClose}
-                  onOpen={handleCafeSelectOpen}
-                  value={value}
-                  onChange={handleCafeChange}
-                  required
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {props.countries.map((country: any) => (
-                    <MenuItem key={country.value} value={country.label}>
-                      {country.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={5}>
-            <Grid size={3}>
-              <div className="label">Upload Logo (optional) </div>
-            </Grid>
-            <Grid size={7}>
-              {file ? (
-                <Button
-                  variant="outlined"
-                  onClick={() => setFile(null)}
-                  endIcon={<CloseIcon />}
-                >
-                  {file.name}
-                </Button>
-              ) : (
-                <Button
-                  component="label"
-                  role={undefined}
-                  variant="contained"
-                  tabIndex={-1}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Upload logo
-                  <VisuallyHiddenInput
-                    type="file"
-                    onChange={(event) =>
-                      event.target.files && setFile(event.target.files[0])
-                    }
-                  />
-                </Button>
-              )}
-            </Grid>
-          </Grid>
-          <Grid container spacing={2}>
-            <Button onClick={() => handleSubmit()} variant="contained" className="form-button">
-              Submit
-            </Button>
-            <Button
-              variant="outlined"
-              className="form-button"
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
-          </Grid>
-        </FormControl>
-      </Box>
-    </Modal>
+    <CModal
+      {...props}
+      existingData={props.data}
+      countries={props.countries}
+      types={cafeTypes}
+      handleSubmit={handleSubmit}
+      error={error}
+      handleClose={handleClose}
+    ></CModal>
   );
 };
