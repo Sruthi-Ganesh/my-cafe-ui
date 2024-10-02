@@ -43,7 +43,7 @@ export const CModal = (props: ModalProps) => {
     <>
       <Modal
         open={props.open}
-        onClose={handleCloseModals}
+        onClose={() => setOpenConfirmationDialog(true)}
         className="create-modal"
       >
         <Box sx={BoxStyle}>
