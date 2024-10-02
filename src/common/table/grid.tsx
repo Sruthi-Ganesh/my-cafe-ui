@@ -22,10 +22,13 @@ export const GridTable = (props: GridProps) => {
   }, []);
 
   const onPaginationChange = (event: PaginationChangedEvent<any>) => {
-    props.onPaginationChange(
-      event.api.paginationGetCurrentPage() + 1,
-      event.api.paginationGetPageSize()
-    );
+    const { server_pagination } = process.env;
+    if (server_pagination === "true") {
+      props.onPaginationChange(
+        event.api.paginationGetCurrentPage() + 1,
+        event.api.paginationGetPageSize()
+      );
+    }
   };
 
   return (
