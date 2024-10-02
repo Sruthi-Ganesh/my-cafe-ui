@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { ConfirmationDialog } from "../../../common/dialog";
+import { ConfirmationDialog, DialogType } from "../../../common/dialog";
 import { useState } from "react";
 import { CustomCellRendererProps } from "ag-grid-react";
 import { deleteEmployee } from "../../../apis/employee";
@@ -17,7 +17,7 @@ export const DeleteEmployeeComponent = (params: CustomCellRendererProps) => {
     mutationFn: (data: any) => {
       setDeleteModelOpen(false);
       return deleteEmployee(data).then((res) => {
-        params.api.applyTransaction({ remove: [{id: data.empId}] });
+        params.api.applyTransaction({ remove: [{ id: data.empId }] });
         return res;
       });
     },
@@ -39,13 +39,21 @@ export const DeleteEmployeeComponent = (params: CustomCellRendererProps) => {
   return (
     <>
       <ConfirmationDialog
-        title='Delete the employee?'
-        content={"Are you sure you want to delete the employee: " + params.data.name}
+        type={DialogType.error}
+        title="Delete the employee?"
+        content={
+          "Are you sure you want to delete the employee: " + params.data.name
+        }
         open={deleteModalOpen}
         setOpen={setDeleteModelOpen}
-        onDelete={() => mutation.mutate({empId: String(params.data.id)})}
+        onClick={() => mutation.mutate({ empId: String(params.data.id) })}
+        buttonText="Delete"
       ></ConfirmationDialog>
-      <FontAwesomeIcon onClick={() => setDeleteModelOpen(true)} icon="fa-trash" style={{ color: "#cc0000" }} />
+      <FontAwesomeIcon
+        onClick={() => setDeleteModelOpen(true)}
+        icon="fa-trash"
+        style={{ color: "#cc0000" }}
+      />
     </>
   );
 };

@@ -15,6 +15,8 @@ import "./styles.scss";
 import { CTextField } from "./fields/text";
 import { CSelectField } from "./fields/select";
 import { CFileField } from "./fields/file";
+import { useState } from "react";
+import { ConfirmationDialog, DialogType } from "../dialog";
 
 interface ModalProps {
   open: boolean;
@@ -29,58 +31,77 @@ interface ModalProps {
 }
 
 export const CModal = (props: ModalProps) => {
+  const [openConfirmationDialog, setOpenConfirmationDialog] =
+    useState<boolean>(false);
+
+  const handleCloseModals = () => {
+    setOpenConfirmationDialog(false);
+    props.handleClose();
+  };
+
   return (
-    <Modal
-      open={props.open}
-      onClose={props.handleClose}
-      className="create-modal"
-    >
-      <Box sx={BoxStyle}>
-        <AppBar className="create-appbar" position="static">
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              {props.displayTitle}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        {props.error && (
-          <Alert variant="filled" severity="error">
-            {props.error.message}
-          </Alert>
-        )}
-        <FormControl className="create-form" defaultValue="" required>
-          {props.types.map((modalType: ModalType) => {
-            const { type } = modalType;
-            switch (type) {
-              case FieldType.TextField: {
-                return <CTextField {...modalType}></CTextField>;
+    <>
+      <Modal
+        open={props.open}
+        onClose={props.handleClose}
+        className="create-modal"
+      >
+        <Box sx={BoxStyle}>
+          <AppBar className="create-appbar" position="static">
+            <Toolbar>
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                {props.displayTitle}
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          {props.error && (
+            <Alert variant="filled" severity="error">
+              {props.error.message}
+            </Alert>
+          )}
+          <FormControl className="create-form" defaultValue="" required>
+            {props.types.map((modalType: ModalType) => {
+              const { type } = modalType;
+              switch (type) {
+                case FieldType.TextField: {
+                  return <CTextField {...modalType}></CTextField>;
+                }
+                case FieldType.SelectField: {
+                  return <CSelectField {...modalType}></CSelectField>;
+                }
+                case FieldType.FileField: {
+                  return <CFileField {...modalType}></CFileField>;
+                }
               }
-              case FieldType.SelectField: {
-                return <CSelectField {...modalType}></CSelectField>;
-              }
-              case FieldType.FileField: {
-                return <CFileField {...modalType}></CFileField>;
-              }
-            }
-          })}
-          <Grid container spacing={2}>
-            <Button
-              onClick={() => props.handleSubmit()}
-              variant="contained"
-              className="form-button"
-            >
-              Submit
-            </Button>
-            <Button
-              variant="outlined"
-              className="form-button"
-              onClick={props.handleClose}
-            >
-              Cancel
-            </Button>
-          </Grid>
-        </FormControl>
-      </Box>
-    </Modal>
+            })}
+            <Grid container spacing={2}>
+              <Button
+                onClick={() => props.handleSubmit()}
+                variant="contained"
+                className="form-button"
+              >
+                Submit
+              </Button>
+              <Button
+                variant="outlined"
+                className="form-button"
+                onClick={() => setOpenConfirmationDialog(true)}
+              >
+                Cancel
+              </Button>
+            </Grid>
+          </FormControl>
+        </Box>
+      </Modal>
+      <ConfirmationDialog
+        title={`Close the ${props.displayTitle}?`}
+        content="Are you sure you want to close the modal?"
+        open={openConfirmationDialog}
+        setOpen={setOpenConfirmationDialog}
+        onClick={() => handleCloseModals()}
+        buttonText="Confirm"
+        type={DialogType.confirmation}
+      ></ConfirmationDialog>
+    </>
   );
 };
