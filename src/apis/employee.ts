@@ -1,11 +1,23 @@
 import { CREATE_EMPLOYEE, GET_ALL_EMPLOYEES } from "./constants/urls";
 
+const getURL = (page: number, page_size: number) => {
+  const {server_pagination} = process.env;
+  let url: string;
+  if (server_pagination === "true") {
+    url = GET_ALL_EMPLOYEES + `?page=${page}&&page_size=${page_size}`;
+  } else {
+    url = GET_ALL_EMPLOYEES;
+  }
+
+  return url;
+};
+
 export const getAllEmployees = async (
   page: number,
   page_size: number,
   cafeId: string | null
 ) => {
-  var url: string = GET_ALL_EMPLOYEES + `?page=${page}&&page_size=${page_size}`;
+  var url: string = getURL(page, page_size);
   if (cafeId != null && cafeId != '' && cafeId != 'null') {
     url = url + `&&cafe=${cafeId}`;
   }

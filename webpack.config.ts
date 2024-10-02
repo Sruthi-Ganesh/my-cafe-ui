@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+require('dotenv').config({ path: './.env' });
 import { TanStackRouterWebpack } from "@tanstack/router-plugin/webpack";
 
 module.exports = {
@@ -42,6 +43,9 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+    }),
+    new webpack.DefinePlugin({
+      "process.env": JSON.stringify(process.env),
     }),
     TanStackRouterWebpack(),
   ],

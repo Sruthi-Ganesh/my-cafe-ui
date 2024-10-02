@@ -5,12 +5,24 @@ import {
   UPDATE_LOGO,
 } from "./constants/urls";
 
+const getURL = (page: number, page_size: number) => {
+  const {server_pagination} = process.env;
+  let url: string;
+  if (server_pagination === "true") {
+    url = GET_ALL_CAFES + `?page=${page}&&page_size=${page_size}`;
+  } else {
+    url = GET_ALL_CAFES;
+  }
+
+  return url;
+};
+
 export const getAllCafes = async (
   page: number,
   page_size: number,
   location: string | null
 ) => {
-  var url: string = GET_ALL_CAFES + `?page=${page}&&page_size=${page_size}`;
+  let url = getURL(page, page_size);
   if (location != null && location != "" && location != "null") {
     url = url + `&&location=${location}`;
   }
