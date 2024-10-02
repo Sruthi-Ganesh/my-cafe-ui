@@ -64,7 +64,7 @@ export const EditCafeComponent = (params: CustomCellRendererProps) => {
         }
         countries={countryQuery.data}
         data={params.data}
-        displayTitle="Update Employee Form"
+        displayTitle="Update Cafe Form"
         open={editModalOpen}
         setOpen={setEditModelOpen}
       ></CafeModal>
